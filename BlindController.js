@@ -22,6 +22,8 @@ class BlindController {
 
 		this.pwm = new Pca9685Driver(options, this.error.bind(this));
 
+		this.currentPos = [];
+
 		// set-up CTRL-C with graceful shutdown
 		process.on('SIGINT', () => {
 			console.log('\nGracefully shutting down from SIGINT (Ctrl-C)');
@@ -40,8 +42,21 @@ class BlindController {
 		const tma = CONFIG.max[i];
 		const trim = tm + (tma - tm) * x;
 		const p = CONFIG.direction[i] ? 1 - trim : trim;
-		this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * p);
-		await delay(ON_TIME);
+		const cp = this.currentPos[i];
+		if (cp < p) {
+			for (let q = cp; q < p; q += 0.01) {
+				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
+				await delay(1000 / 20);
+			}
+		} else {
+			for (let q = cp; q > p; q -= 0.01) {
+				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
+				await delay(1000 / 20);
+			}
+		}
+
+		this.currentPos[i] = p;
+		// await delay(ON_TIME);
 		this.pwm.channelOff(i);
 	}
 }
