@@ -8,7 +8,13 @@ const CONFIG = {
 	max: [1, 1, 1, 1, 1, 1, 1],
 };
 
-const delay = (t) => new Promise((r) => setTimeout(r, t));
+const DELAYS = {};
+
+const delay = (t, i) =>
+	new Promise((r) => {
+		clearTimeout(DELAYS[i]);
+		DELAYS[i] = setTimeout(r, t);
+	});
 
 class BlindController {
 	constructor(busId) {
@@ -42,21 +48,8 @@ class BlindController {
 		const tma = CONFIG.max[i];
 		const trim = tm + (tma - tm) * x;
 		const p = CONFIG.direction[i] ? 1 - trim : trim;
-		const cp = this.currentPos[i];
-		if (cp < p) {
-			for (let q = cp; q < p; q += 0.05) {
-				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
-				await delay(100);
-			}
-		} else {
-			for (let q = cp; q > p; q -= 0.05) {
-				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
-				await delay(100);
-			}
-		}
-
-		this.currentPos[i] = p;
-		// await delay(ON_TIME);
+		this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * p);
+		await delay(ON_TIME, i);
 		this.pwm.channelOff(i);
 	}
 }
