@@ -39,7 +39,8 @@ class BlindController {
 		const tm = CONFIG.min[i];
 		const tma = CONFIG.max[i];
 		const trim = tm + (tma - tm) * x;
-		this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * trim);
+		const p = CONFIG.direction[i] ? 1 - trim : trim;
+		this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * p);
 		await delay(ON_TIME);
 		this.pwm.channelOff(i);
 	}
