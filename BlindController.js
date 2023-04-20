@@ -44,14 +44,14 @@ class BlindController {
 		const p = CONFIG.direction[i] ? 1 - trim : trim;
 		const cp = this.currentPos[i];
 		if (cp < p) {
-			for (let q = cp; q < p; q += 0.01) {
+			for (let q = cp; q < p; q += 0.1) {
 				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
-				await delay(1000 / 10);
+				await delay(1000);
 			}
 		} else {
-			for (let q = cp; q > p; q -= 0.01) {
+			for (let q = cp; q > p; q -= 0.1) {
 				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
-				await delay(1000 / 10);
+				await delay(1000);
 			}
 		}
 
