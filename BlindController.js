@@ -46,12 +46,12 @@ class BlindController {
 		if (cp < p) {
 			for (let q = cp; q < p; q += 0.01) {
 				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
-				await delay(1000 / 20);
+				await delay(1000 / 10);
 			}
 		} else {
 			for (let q = cp; q > p; q -= 0.01) {
 				this.pwm.setPulseLength(i, 1000 + (2200 - 1000) * q);
-				await delay(1000 / 20);
+				await delay(1000 / 10);
 			}
 		}
 
