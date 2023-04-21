@@ -4,7 +4,7 @@ const { Pca9685Driver } = require('pca9685');
 const ON_TIME = 700;
 const CONFIG = {
 	direction: [false, false, false, true, true, true, true],
-	min: [0, 0, 0, 0, 0, 0, 0],
+	min: [-0.1, -0.1, 0, -0.2, 0, -0.1, 0],
 	max: [1, 1, 1, 1, 1, 1, 1],
 };
 
